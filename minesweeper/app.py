@@ -1,36 +1,43 @@
 import tkinter as tk
-from minesweeper.main_menu import MainMenu
-from minesweeper.leaderboard import Leaderboard
-from minesweeper.game import Game
+if __name__ == '__main__':
+    from main_menu import MainMenu
+    from play_options import PlayOptions
+    from game import Game
+else:
+    from minesweeper.main_menu import MainMenu
+    from minesweeper.play_options import PlayOptions
+    from minesweeper.game import Game
 
-class App(tk.Tk):
+class App():
     def __init__(self, width, height):
-        tk.Tk.__init__(self)
         self.width = width
         self.height = height
-        self.title("Minesweeper")
-        self.geometry(f"{width}x{height}")
-        self.minsize(300, 300)
+
+        self.configure_window()
         self.show_main_menu()
-        self.mainloop()
+        self.window.mainloop()
     
+    def configure_window(self):
+        self.window = tk.Tk()
+        self.window.title("Minesweeper")
+        self.window.geometry(f"{self.width}x{self.height}")
+        self.window.minsize(300, 300)
+
     def show_main_menu(self):
-        self.main_menu = MainMenu(self)
-        self.main_menu.start_btn.config(command=self.start_game)
-        self.main_menu.leaderboard_btn.config(command=self.show_leaderboard)
+        self.main_menu = MainMenu(self.window)
+        self.main_menu.start_btn.config(command=self.show_play_options)
         self.main_menu.pack(fill=tk.BOTH, expand=True)
 
-    def show_leaderboard(self):
-        self.leaderboard = Leaderboard(self)
-        self.leaderboard.pack(fill=tk.BOTH, expand=True)
-
     def show_play_options(self):
-        pass
+        self.main_menu.pack_forget()
+        self.play_options = PlayOptions(self.window)
+        self.play_options.pack(fill=tk.BOTH, expand=True)
 
-    def start_game(self):
-        Game(self.width, self.height)
-        self.destroy()
-    
+        # Used to set size of game to the same size as window
+        self.play_options.width = self.width
+        self.play_options.height = self.height
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     App(700, 700)
+    
